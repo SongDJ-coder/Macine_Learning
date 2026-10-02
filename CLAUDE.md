@@ -26,16 +26,16 @@
 
 ## 현재 진도 (다음 세션은 여기서 이어서)
 
-- **4장 04-1 로지스틱 회귀** 진행 중 (`ch04_logistic_regression/logistic_regression.ipynb`)
-- 마지막 위치: "로지스틱 회귀로 이진 분류 수행하기" — 불리언 인덱싱으로 도미/빙어만 추리는 코드
-  ```python
-  bream_smelt_indexes = (train_target == 'Bream') | (train_target == 'Smelt')
-  ```
-- **미해결**: 이 불리언 인덱싱 설명을 사용자가 아직 이해 못 함. 다음 세션 시작 시 이것부터 다시 설명할 것.
-  - 개정판 노트북에 있는 작은 예제(`char_arr[[True, False, True, False, False]]`)부터 시작해서,
-    작은 배열 + 텍스트 다이어그램(위치별 True/False 대응)으로 **처음부터** 다시 설명.
-  - 이전 설명(비교 → True/False 배열 → `|`로 합치기 → 필터링)을 그대로 반복하지 말 것.
-- 다음 내용: `LogisticRegression` 이진 분류 → `decision_function`/`expit` → 다중 분류(`softmax`)
+- **4장 04-1 로지스틱 회귀 — 개념 학습 완료** (불리언 인덱싱, 이진 분류 학습 원리, decision_function/expit,
+  다중 분류 softmax와 행렬 형태의 가중치 수정까지 이해함). 노트: `notes/ch04.md` + `notes/extra/ch04-*.md`
+- 사용자 노트북(`ch04_logistic_regression/logistic_regression.ipynb`)은 **`predict_proba` 셀까지만** 작성·push됨.
+  - 다음 세션 시작 시: `classes_`, `coef_`, `decision_function`, `expit`, 다중 분류(`C=20, max_iter=1000`),
+    `softmax` 셀을 사용자가 직접 실행했는지 노트북에서 확인하고, 결과 해석을 도와줄 것.
+  - 사용자 노트북은 `fish['Species'].to_numpy()`(초판 방식)를 써서 `train_target`이 numpy 배열임. 문제없이 동작함.
+- 그다음: **04-2 확률적 경사 하강법** (`SGDClassifier`). 04-1에서 "오차 × 특성값만큼 빼는 규칙 = 경사 하강법"을
+  미리 설명해뒀으니 그것과 연결해서 설명할 것 (`notes/extra/ch04-가중치-학습-원리.md`).
+- 이번 세션에 효과 있었던 방식: 단계별로 끊어 설명하고 사용자가 "다음"이라고 하면 넘어가기 +
+  단계마다 matplotlib 이미지(행렬곱 색칠, 소프트맥스 막대, 오차 히트맵, 결정 경계 변화). 이미지는 `notes/extra/img/`에 보관.
 
 ## 사용자 폴더 구조
 
@@ -85,6 +85,8 @@
 3. 재현과 그래프에는 설정 스크립트가 만든 가상환경 **`/home/user/ml-venv`**를 쓴다
    (`/home/user/ml-venv/bin/python ...`). numpy, pandas, matplotlib, scikit-learn이 설치돼 있다.
    없으면 `bash setup/cloud_setup.sh`로 만든다. 딥러닝 장부터는 스크립트의 `tensorflow torch` 줄 주석을 풀도록 안내한다.
+4. 컨테이너에서는 `https://bit.ly/fish_csv_data`가 프록시에 막힌다(403). 재현할 때는
+   `https://raw.githubusercontent.com/rickiepark/hg-mldl/master/fish.csv`를 받아서 쓴다 (같은 데이터).
 
 ## 작업 흐름 (동기화)
 
