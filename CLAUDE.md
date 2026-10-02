@@ -28,9 +28,11 @@
 
 - **4장 04-1 로지스틱 회귀 — 개념 학습 완료** (불리언 인덱싱, 이진 분류 학습 원리, decision_function/expit,
   다중 분류 softmax와 행렬 형태의 가중치 수정까지 이해함). 노트: `notes/ch04.md` + `notes/extra/ch04-*.md`
-- 사용자 노트북(`ch04_logistic_regression/logistic_regression.ipynb`)은 **`predict_proba` 셀까지만** 작성·push됨.
-  - 다음 세션 시작 시: `classes_`, `coef_`, `decision_function`, `expit`, 다중 분류(`C=20, max_iter=1000`),
-    `softmax` 셀을 사용자가 직접 실행했는지 노트북에서 확인하고, 결과 해석을 도와줄 것.
+- 사용자 노트북(`ch04_logistic_regression/logistic_regression.ipynb`)은 다중 분류의 `lr.classes_` 셀까지 실행·push됨
+  (결과 모두 책과 일치. 다중 분류 셀은 `max_iter=50` 실험 후 다시 1000으로 돌린 상태).
+  - 남은 04-1 셀: `lr.coef_.shape, lr.intercept_.shape` → `decision_function` → `scipy.special.softmax`.
+    다음 세션에서 사용자가 이 셀들을 실행하면 결과 해석만 짧게 확인하고 04-2로 넘어갈 것.
+    (softmax 행렬 원리는 이미 설명함: `notes/extra/ch04-다중분류-행렬.md`)
   - 사용자 노트북은 `fish['Species'].to_numpy()`(초판 방식)를 써서 `train_target`이 numpy 배열임. 문제없이 동작함.
 - 그다음: **04-2 확률적 경사 하강법** (`SGDClassifier`). 04-1에서 "오차 × 특성값만큼 빼는 규칙 = 경사 하강법"을
   미리 설명해뒀으니 그것과 연결해서 설명할 것 (`notes/extra/ch04-가중치-학습-원리.md`).
@@ -85,6 +87,8 @@
 3. 재현과 그래프에는 설정 스크립트가 만든 가상환경 **`/home/user/ml-venv`**를 쓴다
    (`/home/user/ml-venv/bin/python ...`). numpy, pandas, matplotlib, scikit-learn이 설치돼 있다.
    없으면 `bash setup/cloud_setup.sh`로 만든다. 딥러닝 장부터는 스크립트의 `tensorflow torch` 줄 주석을 풀도록 안내한다.
+   설정 스크립트가 일부만 적용된 세션도 있었음(hg-mldl2만 있고 ml-venv 없음). 그럴 땐 `bash setup/cloud_setup.sh`
+   또는 임시로 `python3 -m venv venv && venv/bin/pip install numpy pandas matplotlib scikit-learn` (venv/는 gitignore됨).
 4. 컨테이너에서는 `https://bit.ly/fish_csv_data`가 프록시에 막힌다(403). 재현할 때는
    `https://raw.githubusercontent.com/rickiepark/hg-mldl/master/fish.csv`를 받아서 쓴다 (같은 데이터).
 
