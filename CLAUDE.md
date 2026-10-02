@@ -19,11 +19,9 @@
 - **판이 다르면 코드가 다르다.** 예: 4-1에서 초판은 `fish_target = fish['Species'].to_numpy()` +
   `train_target[indexes]`를 쓰지만, 개정판은 `fish['Species']`(pandas 그대로) + `train_target.iloc[indexes[0]]`를
   쓴다. 3장부터는 반드시 `hg-mldl2` 기준으로 판단할 것.
-- 새 세션은 컨테이너가 새로 뜨므로 다시 clone 해야 한다:
-  ```bash
-  GIT_LFS_SKIP_SMUDGE=1 git clone --depth 1 https://github.com/rickiepark/hg-mldl2 /home/user/rickiepark/hg-mldl2
-  GIT_LFS_SKIP_SMUDGE=1 git clone --depth 1 https://github.com/rickiepark/hg-mldl  /home/user/rickiepark/hg-mldl
-  ```
+- 두 저장소는 클라우드 환경의 **설정 스크립트**(`setup/cloud_setup.sh`)가 세션 시작 시 `/home/user/rickiepark/`에
+  자동으로 clone한다. 세션 시작 후 `ls /home/user/rickiepark`로 확인하고, 없으면(스크립트 미적용·실패)
+  `bash setup/cloud_setup.sh`를 직접 실행한다. 클라우드 환경 사용법 전반은 `notes/tools/클라우드-환경.md` 참고.
 - 노트북 셀 내용 확인: `python3 -c "import json; nb=json.load(open('경로')); ..."`로 cells를 출력해서 본다.
 
 ## 현재 진도 (다음 세션은 여기서 이어서)
@@ -44,6 +42,9 @@
 - `ch01_my_first_ml/`, `ch02_handling_data/`, `ch03_recursion_model/`, `ch04_logistic_regression/` — 사용자가 직접 만든 실습 노트북
 - `linear_regression.ipynb` — 사용자가 루트로 옮겨둔 3-2 노트북 (건드리지 않음)
 - `notes/chXX.md` + `notes/extra/` — Claude가 관리하는 원리 노트 (Obsidian vault)
+- `notes/tools/` — 책 내용이 아닌 도구 사용법 노트 (클라우드 환경, git 등)
+- `setup/cloud_setup.sh` — 클라우드 환경의 설정 스크립트 원본. 사용자가 이 내용을 환경 설정에 붙여넣어 쓴다.
+  스크립트를 고치면 사용자에게 환경 설정에도 다시 붙여넣으라고 안내할 것.
 
 ## 역할 분담
 
@@ -81,8 +82,9 @@
      `plt.rcParams['font.family'] = 'WenQuanYi Zen Hei'`, `plt.rcParams['axes.unicode_minus'] = False`
    - 전송 전에 `Read`로 이미지를 직접 보고 글자 깨짐과 가독성을 확인한다.
    - 예시: 최소제곱법 설명 때 "잔차 시각화 + SSE(w,b) 등고선 밥그릇" 2패널 그림을 만들어 효과가 있었음.
-3. 이 저장소의 `venv/`(컨테이너 안)에 numpy, pandas, matplotlib, scikit-learn이 있으니 재현과 그래프에 사용한다.
-   (새 세션이면 `python3 -m venv venv && venv/bin/pip install numpy pandas matplotlib scikit-learn`)
+3. 재현과 그래프에는 설정 스크립트가 만든 가상환경 **`/home/user/ml-venv`**를 쓴다
+   (`/home/user/ml-venv/bin/python ...`). numpy, pandas, matplotlib, scikit-learn이 설치돼 있다.
+   없으면 `bash setup/cloud_setup.sh`로 만든다. 딥러닝 장부터는 스크립트의 `tensorflow torch` 줄 주석을 풀도록 안내한다.
 
 ## 작업 흐름 (동기화)
 
@@ -110,7 +112,7 @@
 
 ## 커밋/푸시
 
-- `notes/`, `CLAUDE.md` 변경 시 Claude가 직접 git add/commit/push
+- `notes/`, `setup/`, `CLAUDE.md` 변경 시 Claude가 직접 git add/commit/push
 - 원격 브랜치: `claude/ml-dl-learning-support-y95l9c`
 - 커밋 메시지는 한국어로 간단히 작성
 - 커밋 전에 fetch + ff-merge로 사용자 push를 먼저 반영한다.
