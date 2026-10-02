@@ -28,13 +28,13 @@
 
 - **4장 04-1 로지스틱 회귀 — 개념 학습 완료** (불리언 인덱싱, 이진 분류 학습 원리, decision_function/expit,
   다중 분류 softmax와 행렬 형태의 가중치 수정까지 이해함). 노트: `notes/ch04.md` + `notes/extra/ch04-*.md`
-- 04-1 실습도 softmax 확인까지 **완료** (사용자 확인). 사용자 노트북은 `fish['Species'].to_numpy()`(초판 방식)를
-  써서 `train_target`이 numpy 배열임. 문제없이 동작함.
-- **현재: 04-2 확률적 경사 하강법(`SGDClassifier`) 진행 중.**
-  - 세션 종료 시점에 softmax 이후 셀과 04-2 실습은 사용자 로컬에만 있고 **push 전**이었음
-    (원격 마지막 노트북 커밋 `ee1c3d5`는 다중 분류 `classes_` 셀까지).
-  - 다음 세션 시작 시: fetch해서 04-2 노트북(같은 파일인지 새 파일인지)과 진행 위치를 먼저 확인하고,
-    push가 안 돼 있으면 push를 요청할 것. 추측으로 진도를 판단하지 말 것.
+- 04-1 실습도 `logistic_regression.ipynb` 마지막 softmax 셀까지 **완료·push** (결과 모두 책과 일치).
+  사용자 노트북은 `fish['Species'].to_numpy()`(초판 방식)를 써서 `train_target`이 numpy 배열임. 문제없이 동작함.
+- **현재: 04-2 확률적 경사 하강법(`SGDClassifier`) 시작.** 새 노트북 `ch04_logistic_regression/stochastic_gradient.ipynb`
+  - 지금은 첫 마크다운 메모("점진적으로 들어오는 데이터를 학습")만 있고 코드 셀은 비어 있음 (커밋 `b7f80a0`).
+  - 다음: 데이터 준비 → `SGDClassifier(loss='log_loss', max_iter=10)` → `partial_fit` → 에포크 300회 정확도 그래프
+    (조기 종료 지점) → `hinge` 손실. 책 코드는 `/home/user/rickiepark/hg-mldl2/04-2.ipynb`에서 확인.
+  - 개정판 04-2는 `fish['Species']`(pandas)를 쓰지만 사용자는 04-1처럼 `to_numpy()`를 쓸 수 있음 — 노트북 확인 후 판단.
   - 04-1에서 "오차 × 특성값만큼 빼는 규칙 = 경사 하강법"을 미리 설명해뒀으니 그것과 연결해서 설명할 것
     (`notes/extra/ch04-가중치-학습-원리.md`, `notes/extra/ch04-다중분류-행렬.md`).
   - 04-2 노트는 아직 `notes/ch04.md`에 없음 → 04-2를 공부하며 `## 04-2 확률적 경사 하강법` 섹션을 추가할 것.
