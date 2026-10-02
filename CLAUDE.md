@@ -1,61 +1,131 @@
 # 프로젝트 개요
 
 『혼자 공부하는 머신러닝+딥러닝』(박해선, 한빛미디어) 완독 실습을 위한 개인 학습 저장소.
-1~2장은 개정 전 판, **3장부터는 개정판**으로 전환해서 진행 중. 공식 코드 저장소
-[rickiepark/hg-mldl](https://github.com/rickiepark/hg-mldl)를 세션에 clone해두고
-데이터/코드 정확성 대조용으로 사용 (`/home/user/rickiepark/hg-mldl`). 이 저장소는
-계속 관리되고 있어 개정판 기준 코드와도 대체로 일치함 — 코드/데이터 보내주기 전에
-가능하면 이걸로 먼저 확인.
+
+**공부 목적**: 코드를 따라 치는 데서 그치지 않고 **원리까지 이해**하는 것. 사용자는 "왜 이렇게
+되는가"(수학적 근거, 내부 동작, 문법 구조)를 자주 묻는다.
 
 사용자 로컬 환경: Windows, VS Code + Jupyter 확장, Python 3.14, `venv` 가상환경.
 
+## 책 판(edition)과 참고 저장소
+
+| 범위 | 판 | 공식 코드 저장소 | 노트북 파일명 |
+|---|---|---|---|
+| 1~2장 | 초판(2020, 개정 전) | `rickiepark/hg-mldl` | `2-1.ipynb` 형식 |
+| **3장부터** | **개정판(2025)** | **`rickiepark/hg-mldl2`** | `03-1.ipynb` 형식 (7장~ PyTorch 버전 있음, 10장 트랜스포머/LLM 추가) |
+
+- 데이터·책 코드를 사용자에게 줄 때는 **기억으로 쓰지 말고 반드시 해당 저장소에서 확인한 뒤** 준다.
+  (과거에 `perch_weight` 값을 기억으로 줬다가 3개가 빠져서 에러 난 적 있음)
+- **판이 다르면 코드가 다르다.** 예: 4-1에서 초판은 `fish_target = fish['Species'].to_numpy()` +
+  `train_target[indexes]`를 쓰지만, 개정판은 `fish['Species']`(pandas 그대로) + `train_target.iloc[indexes[0]]`를
+  쓴다. 3장부터는 반드시 `hg-mldl2` 기준으로 판단할 것.
+- 새 세션은 컨테이너가 새로 뜨므로 다시 clone 해야 한다:
+  ```bash
+  GIT_LFS_SKIP_SMUDGE=1 git clone --depth 1 https://github.com/rickiepark/hg-mldl2 /home/user/rickiepark/hg-mldl2
+  GIT_LFS_SKIP_SMUDGE=1 git clone --depth 1 https://github.com/rickiepark/hg-mldl  /home/user/rickiepark/hg-mldl
+  ```
+- 노트북 셀 내용 확인: `python3 -c "import json; nb=json.load(open('경로')); ..."`로 cells를 출력해서 본다.
+
+## 현재 진도 (다음 세션은 여기서 이어서)
+
+- **4장 04-1 로지스틱 회귀** 진행 중 (`ch04_logistic_regression/logistic_regression.ipynb`)
+- 마지막 위치: "로지스틱 회귀로 이진 분류 수행하기" — 불리언 인덱싱으로 도미/빙어만 추리는 코드
+  ```python
+  bream_smelt_indexes = (train_target == 'Bream') | (train_target == 'Smelt')
+  ```
+- **미해결**: 이 불리언 인덱싱 설명을 사용자가 아직 이해 못 함. 다음 세션 시작 시 이것부터 다시 설명할 것.
+  - 개정판 노트북에 있는 작은 예제(`char_arr[[True, False, True, False, False]]`)부터 시작해서,
+    작은 배열 + 텍스트 다이어그램(위치별 True/False 대응)으로 **처음부터** 다시 설명.
+  - 이전 설명(비교 → True/False 배열 → `|`로 합치기 → 필터링)을 그대로 반복하지 말 것.
+- 다음 내용: `LogisticRegression` 이진 분류 → `decision_function`/`expit` → 다중 분류(`softmax`)
+
+## 사용자 폴더 구조
+
+- `ch01_my_first_ml/`, `ch02_handling_data/`, `ch03_recursion_model/`, `ch04_logistic_regression/` — 사용자가 직접 만든 실습 노트북
+- `linear_regression.ipynb` — 사용자가 루트로 옮겨둔 3-2 노트북 (건드리지 않음)
+- `notes/chXX.md` + `notes/extra/` — Claude가 관리하는 원리 노트 (Obsidian vault)
+
 ## 역할 분담
 
-- **사용자**: `chXX_.../*.ipynb`에 책 실습 코드를 직접 작성·실행. Claude는 이 코드를 미리 만들지 않는다.
-- **Claude**: `notes/chXX.md`에 원리·개념 정리만 담당. 사용자가 요청했을 때만 작성/수정한다.
-- Claude는 사용자가 먼저 요청하기 전까지 새 파일이나 코드를 미리 만들지 않는다 (스캐폴딩 금지).
+- **사용자**: `chXX_.../*.ipynb`에 책 실습 코드를 직접 작성하고 실행한 뒤, 직접 `git add / commit / push`한다.
+- **Claude**:
+  - 질문에 원리와 개념으로 답한다. 코드는 사용자가 요청할 때만 준다.
+  - 사용자 노트북(`.ipynb`)은 절대 만들거나 수정하지 않는다. 새 파일도 요청 전에는 만들지 않는다 (스캐폴딩 금지).
+  - `notes/`의 원리 노트만 작성하고 관리한다.
+
+## 답변 방식 (사용자 선호, 반드시 지킬 것)
+
+- **음슴체, 짧게.** 질문의 핵심에만 답한다. 답이 길어지면 사용자가 요점을 놓친다.
+- **"이해 안 됨" 신호가 오면 같은 설명을 반복하지 말고**, 작은 숫자 예시로 처음부터 다시 설명한다.
+  그래도 어려우면 시각화로 설명한다 (아래 참고).
+- 수학적인 "왜" 질문(증명, 행렬 유도, 확률 성질 등)에는 수식과 직관을 함께 준다.
+- **질문받은 코드는 오타부터 확인한다.** 자주 나온 실수: `kneighbers`, `trainsform`, `random=`(→`random_state=`),
+  `matplotlib.pylot`, `'Weigh'`, `idexes`, 쉼표 위치(`50*lr.coef_, +lr.intercept_`).
+- **추측으로 답하지 말고**, 사용자가 push한 실제 노트북을 fetch해서 확인한 뒤 답한다.
+  셀의 `execution_count`가 `None`이면 실행되지 않은 셀이다.
+- 사용자가 책과 다르게 실험한 결과(예: 열 순서를 바꾼 뒤의 coef_)를 물으면, 직접 venv에서 재현해서 검증한다.
+- 사용자가 "이해했어"라고 요약하면, 맞는 부분과 틀린 부분을 짚어서 확인해준다.
+
+## 시각화 설명 방법
+
+행렬, 차원, 인덱싱, 수식처럼 말로 이해가 잘 안 되는 개념은 그림으로 설명한다.
+
+1. **텍스트 다이어그램** (기본): 배열 모양과 행/열을 코드블록으로 그리고, 화살표(`→`, `↑`)로 대응 관계를 표시한다.
+   ```
+   arr = [[1, 2],      arr[2]   → [5, 6]     shape (2,)   ← 정수 인덱싱: 차원 사라짐
+          [3, 4],      arr[2:3] → [[5, 6]]   shape (1, 2) ← 슬라이스: 차원 유지
+          [5, 6]]
+   ```
+2. **matplotlib 그래프 이미지** (수식이나 기하적 개념일 때): 스크래치패드에서 그려서 `SendUserFile`로 전송한다.
+   - 한글 폰트: `fm.fontManager.addfont('/usr/share/fonts/truetype/wqy/wqy-zenhei.ttc')` 후
+     `plt.rcParams['font.family'] = 'WenQuanYi Zen Hei'`, `plt.rcParams['axes.unicode_minus'] = False`
+   - 전송 전에 `Read`로 이미지를 직접 보고 글자 깨짐과 가독성을 확인한다.
+   - 예시: 최소제곱법 설명 때 "잔차 시각화 + SSE(w,b) 등고선 밥그릇" 2패널 그림을 만들어 효과가 있었음.
+3. 이 저장소의 `venv/`(컨테이너 안)에 numpy, pandas, matplotlib, scikit-learn이 있으니 재현과 그래프에 사용한다.
+   (새 세션이면 `python3 -m venv venv && venv/bin/pip install numpy pandas matplotlib scikit-learn`)
 
 ## 작업 흐름 (동기화)
 
-- 사용자는 로컬에서 코드 작성 후 직접 `git add / commit / push`.
-- Claude는 사용자 요청 시 `git fetch` + `git merge --ff-only`로 최신 코드를 확인한 뒤 답변한다.
-- 노트(`notes/chXX.md`) 업데이트는 매 질문마다 즉시 하지 않고 아래 시점에 배치 처리한다:
-  1. 사용자가 "오늘은 여기까지" 등으로 세션 종료를 알릴 때
+- Claude는 사용자 요청 시 `git fetch origin <브랜치>` + `git merge --ff-only`로 최신 코드를 확인한 뒤 답변한다.
+- 사용자 push가 거부되면(Claude가 notes를 먼저 push한 경우) `git pull` 후 다시 push하라고 안내한다.
+- 노트 업데이트는 매 질문마다 즉시 하지 않고 아래 시점에 배치 처리한다:
+  1. 사용자가 "오늘은 여기까지", "오늘 공부한 내용 정리해줘" 등으로 세션 종료를 알릴 때
   2. 대화가 길어져서 한 번에 정리하지 않으면 내용을 놓칠 것 같을 때
-  3. 사용자가 명시적으로 "지금 바로 정리해줘"라고 요청할 때 (예외)
+  3. 사용자가 "꼭 정리해줘", "노트에 넣어줘"처럼 명시적으로 요청할 때
 
 ## notes/chXX.md 작성 규칙
 
 - 파일 상단에 YAML frontmatter 포함: `tags`, `book`, `chapter`, `title`
-- 헤더는 책의 절 번호 그대로 사용 (예: `## 01-3 ...`)
-- 이모지는 챕터/큰 섹션 제목 정도에만 최소한으로 사용. 남발 금지 (문단마다 넣지 않음)
+- 헤더는 책의 절 번호 그대로 사용 (예: `## 04-1 ...`)
+- 이모지는 챕터/큰 섹션 제목 정도에만 최소한으로 사용. 남발 금지
 - 개념 비교는 표(table), 알고리즘 동작 단계는 코드블록 텍스트 다이어그램으로 시각화
 - 핵심 요약은 `> [!tip]`, 한계/주의는 `> [!warning]`, 정의/개요는 `> [!info]` 같은 Obsidian callout 사용
-- 대화 중 사용자가 추가로 던진 질문은 **메인 노트에 인라인으로 적지 않고**, `notes/extra/`에
-  별도 파일로 분리한다.
-  - 파일명: `notes/extra/chXX-주제.md` (주제는 짧은 한글 슬러그, 예: `ch01-fit-필요성.md`)
-  - extra 노트 상단에 `[[chXX|← N장 원리 노트로 돌아가기]]` 형태로 메인 노트 역링크 추가
-  - 메인 노트(`notes/chXX.md`)에는 질문이 발생한 바로 그 지점에
-    `> [!question] 추가 질문` 콜아웃 + `[[extra/chXX-주제|질문 요약]]` wikilink만 삽입
-  - 이렇게 메인 스트림은 짧게 유지하고, 곁가지 질문은 클릭해서 넘어가 보는 구조로 관리
+- 대화 중 사용자가 추가로 던진 질문은 **메인 노트에 인라인으로 적지 않고** `notes/extra/`에 별도 파일로 분리한다.
+  - 파일명: `notes/extra/chXX-주제.md` (주제는 짧은 한글 슬러그)
+  - extra 노트 상단에 `[[chXX|← N장 원리 노트로 돌아가기]]` 역링크
+  - 메인 노트에는 질문이 나온 지점에 `> [!question] 추가 질문` 콜아웃 + `[[extra/chXX-주제|질문 요약]]`만 삽입
+- 책 범위 밖 심화 내용(수학 유도 등)은 extra 노트에 넣고 태그에 `심화`를 붙인다.
 - 문서 끝에 다음 챕터로 가는 `[[chXX+1]]` wikilink 추가
-- Obsidian vault로 바로 열어볼 수 있어야 하므로 순수 마크다운 + 위 문법만 사용 (플러그인 전용 문법 지양)
-- 사용자의 실습 코드(`.ipynb`)는 건드리지 않는다 — 노트 파일만 관리 대상
+- 순수 마크다운 + 위 문법만 사용 (플러그인 전용 문법 지양)
 
 ## 커밋/푸시
 
-- `notes/` 변경 시 Claude가 직접 git add/commit/push
+- `notes/`, `CLAUDE.md` 변경 시 Claude가 직접 git add/commit/push
 - 원격 브랜치: `claude/ml-dl-learning-support-y95l9c`
 - 커밋 메시지는 한국어로 간단히 작성
-
-## 대화 톤
-
-- 채팅 응답은 음슴체, 불필요한 수식어·부사 최소화
+- 커밋 전에 fetch + ff-merge로 사용자 push를 먼저 반영한다.
 
 ## 참고: 이미 해결된 환경 이슈
 
-- VS Code에서 Jupyter 커널 목록에 `venv`가 안 뜨는 문제 → 원인은 **Workspace Trust(제한 모드)**.
-  `Ctrl+Shift+P` → `Workspaces: Manage Workspace Trust` → Trust 선택 → 창 재시작으로 해결됨.
-  (Python/Python Environments 확장은 신뢰 안 된 워크스페이스에서 자동으로 꺼짐)
-- Windows 한국어 로케일(`cp949`)에서 `sklearn` 모델 객체를 노트북에 그냥 출력하면
-  `UnicodeDecodeError`가 날 수 있음 → `sklearn.set_config(display='text')`로 해결.
+- VS Code Jupyter 커널 목록에 `venv`가 안 뜸 → **Workspace Trust(제한 모드)** 때문.
+  `Ctrl+Shift+P` → `Workspaces: Manage Workspace Trust` → Trust → 창 재시작.
+- `sklearn` 모델 객체 출력 시 `UnicodeDecodeError: 'cp949'` → 노트북 맨 위에
+  `import sklearn; sklearn.set_config(display='text')`. (원인: sklearn이 HTML 표시용 `estimator.js`를
+  인코딩 지정 없이 열어서, 한국어 Windows 기본 인코딩 cp949로 UTF-8 파일을 읽으려다 실패)
+- `pd.read_csv('https://...')`에서 `SSLCertVerificationError` → venv에서 `pip install pip-system-certs` 후
+  **커널 재시작** (재시작 안 하면 적용 안 됨). 네트워크를 바꿔도 안 되는 로컬 인증서 저장소 문제였음.
+- 셀 실행 시 `[*]`에서 멈춤 / "Interrupting Kernel" → 커널 Restart, 안 되면 `Developer: Reload Window`.
+- `git commit`만 쳤더니 Vim이 열려서 못 빠져나옴 → `git config --global core.editor "code --wait"`로 변경 완료.
+  앞으로는 `git commit -m "메시지"` 사용을 권장.
+- 3-3의 `PolynomialFeatures(degree=5)` 결과가 책(테스트 -144)과 다르게 나옴(0.978) → 버그 아님,
+  numpy/scipy 버전 차이(특성 55개 > 샘플 42개라 특이행렬, SVD 근사가 버전마다 다름). `notes/extra/ch03-degree5-버전차이.md` 참고.
