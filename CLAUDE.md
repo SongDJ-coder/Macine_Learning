@@ -28,14 +28,16 @@
 
 - **4장 04-1 로지스틱 회귀 — 개념 학습 완료** (불리언 인덱싱, 이진 분류 학습 원리, decision_function/expit,
   다중 분류 softmax와 행렬 형태의 가중치 수정까지 이해함). 노트: `notes/ch04.md` + `notes/extra/ch04-*.md`
-- 사용자 노트북(`ch04_logistic_regression/logistic_regression.ipynb`)은 다중 분류의 `lr.classes_` 셀까지 실행·push됨
-  (결과 모두 책과 일치. 다중 분류 셀은 `max_iter=50` 실험 후 다시 1000으로 돌린 상태).
-  - 남은 04-1 셀: `lr.coef_.shape, lr.intercept_.shape` → `decision_function` → `scipy.special.softmax`.
-    다음 세션에서 사용자가 이 셀들을 실행하면 결과 해석만 짧게 확인하고 04-2로 넘어갈 것.
-    (softmax 행렬 원리는 이미 설명함: `notes/extra/ch04-다중분류-행렬.md`)
-  - 사용자 노트북은 `fish['Species'].to_numpy()`(초판 방식)를 써서 `train_target`이 numpy 배열임. 문제없이 동작함.
-- 그다음: **04-2 확률적 경사 하강법** (`SGDClassifier`). 04-1에서 "오차 × 특성값만큼 빼는 규칙 = 경사 하강법"을
-  미리 설명해뒀으니 그것과 연결해서 설명할 것 (`notes/extra/ch04-가중치-학습-원리.md`).
+- 04-1 실습도 softmax 확인까지 **완료** (사용자 확인). 사용자 노트북은 `fish['Species'].to_numpy()`(초판 방식)를
+  써서 `train_target`이 numpy 배열임. 문제없이 동작함.
+- **현재: 04-2 확률적 경사 하강법(`SGDClassifier`) 진행 중.**
+  - 세션 종료 시점에 softmax 이후 셀과 04-2 실습은 사용자 로컬에만 있고 **push 전**이었음
+    (원격 마지막 노트북 커밋 `ee1c3d5`는 다중 분류 `classes_` 셀까지).
+  - 다음 세션 시작 시: fetch해서 04-2 노트북(같은 파일인지 새 파일인지)과 진행 위치를 먼저 확인하고,
+    push가 안 돼 있으면 push를 요청할 것. 추측으로 진도를 판단하지 말 것.
+  - 04-1에서 "오차 × 특성값만큼 빼는 규칙 = 경사 하강법"을 미리 설명해뒀으니 그것과 연결해서 설명할 것
+    (`notes/extra/ch04-가중치-학습-원리.md`, `notes/extra/ch04-다중분류-행렬.md`).
+  - 04-2 노트는 아직 `notes/ch04.md`에 없음 → 04-2를 공부하며 `## 04-2 확률적 경사 하강법` 섹션을 추가할 것.
 - 이번 세션에 효과 있었던 방식: 단계별로 끊어 설명하고 사용자가 "다음"이라고 하면 넘어가기 +
   단계마다 matplotlib 이미지(행렬곱 색칠, 소프트맥스 막대, 오차 히트맵, 결정 경계 변화). 이미지는 `notes/extra/img/`에 보관.
 
