@@ -30,14 +30,12 @@
   다중 분류 softmax와 행렬 형태의 가중치 수정까지 이해함). 노트: `notes/ch04.md` + `notes/extra/ch04-*.md`
 - 04-1 실습도 `logistic_regression.ipynb` 마지막 softmax 셀까지 **완료·push** (결과 모두 책과 일치).
   사용자 노트북은 `fish['Species'].to_numpy()`(초판 방식)를 써서 `train_target`이 numpy 배열임. 문제없이 동작함.
-- **현재: 04-2 확률적 경사 하강법(`SGDClassifier`) 시작.** 새 노트북 `ch04_logistic_regression/stochastic_gradient.ipynb`
-  - 지금은 첫 마크다운 메모("점진적으로 들어오는 데이터를 학습")만 있고 코드 셀은 비어 있음 (커밋 `b7f80a0`).
-  - 다음: 데이터 준비 → `SGDClassifier(loss='log_loss', max_iter=10)` → `partial_fit` → 에포크 300회 정확도 그래프
-    (조기 종료 지점) → `hinge` 손실. 책 코드는 `/home/user/rickiepark/hg-mldl2/04-2.ipynb`에서 확인.
-  - 개정판 04-2는 `fish['Species']`(pandas)를 쓰지만 사용자는 04-1처럼 `to_numpy()`를 쓸 수 있음 — 노트북 확인 후 판단.
-  - 04-1에서 "오차 × 특성값만큼 빼는 규칙 = 경사 하강법"을 미리 설명해뒀으니 그것과 연결해서 설명할 것
-    (`notes/extra/ch04-가중치-학습-원리.md`, `notes/extra/ch04-다중분류-행렬.md`).
-  - 04-2 노트는 아직 `notes/ch04.md`에 없음 → 04-2를 공부하며 `## 04-2 확률적 경사 하강법` 섹션을 추가할 것.
+- **04-2 확률적 경사 하강법 — 개념·실습 완료** (`ch04_logistic_regression/stochastic_gradient.ipynb`,
+  `tol=None` 100 에포크 셀까지 실행·push, 0.958 / 0.925 책과 일치). 노트: `notes/ch04.md`의 `## 04-2` +
+  `notes/extra/ch04-손실값과-기울기.md`, `ch04-sgd-매개변수.md`, `ch04-sgd-경고와-전처리.md`.
+  - `loss='hinge'` 셀은 개념만 설명했고 노트북에서는 아직 실행 안 함 (원하면 실행 결과만 확인: 책 0.950 / 0.925).
+- **다음: 5장 05-1 결정 트리** (`hg-mldl2/05-1.ipynb`, 와인 데이터). 새 폴더/노트북은 사용자가 직접 만든다.
+  5장 노트는 `notes/ch05.md` 새로 작성 (frontmatter, `## 05-1 ...` 헤더 규칙 따름).
 - 이번 세션에 효과 있었던 방식: 단계별로 끊어 설명하고 사용자가 "다음"이라고 하면 넘어가기 +
   단계마다 matplotlib 이미지(행렬곱 색칠, 소프트맥스 막대, 오차 히트맵, 결정 경계 변화). 이미지는 `notes/extra/img/`에 보관.
 
