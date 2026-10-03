@@ -34,14 +34,20 @@
   `tol=None` 100 에포크 셀까지 실행·push, 0.958 / 0.925 책과 일치). 노트: `notes/ch04.md`의 `## 04-2` +
   `notes/extra/ch04-손실값과-기울기.md`, `ch04-sgd-매개변수.md`, `ch04-sgd-경고와-전처리.md`.
   - `loss='hinge'` 셀은 개념만 설명했고 노트북에서는 아직 실행 안 함 (원하면 실행 결과만 확인: 책 0.950 / 0.925).
-- **다음: 5장 05-1 결정 트리** (`hg-mldl2/05-1.ipynb`, 와인 데이터). 새 폴더/노트북은 사용자가 직접 만든다.
-  5장 노트는 `notes/ch05.md` 새로 작성 (frontmatter, `## 05-1 ...` 헤더 규칙 따름).
+- **5장 05-1 결정 트리 — 개념·실습 완료** (`ch05_tree_algorithm/decission_tree.ipynb`, 점수 모두 책과 일치).
+  - 노트북 18번 셀 `plot_tree(feature_names=['alcohol', 'pH', 'sugar'])` 순서가 틀려 있음(에러 없이 이름만 잘못 붙음) → 노트에 기록, 사용자에게 안내함.
+- **현재: 05-2 교차 검증과 그리드 서치 — 그리드 서치까지 진행** (`ch05_tree_algorithm/counter_check_tree.ipynb`).
+  - 매개변수 1개 그리드 서치까지 실행 완료. 3개 동시(1350조합×5폴드=6750 fit) 셀은 오래 걸려서 사용자가 중단(KeyboardInterrupt).
+    컨테이너 4코어 기준 약 1분 → 기다리면 됨. 결과: max_depth 14, min_impurity_decrease 0.0004, min_samples_split 12 / CV 0.868 / 테스트 0.862.
+  - **다음: 3개 매개변수 그리드 서치 재실행 → 랜덤 서치(`RandomizedSearchCV`, scipy `uniform`/`randint`) → 05-3 트리의 앙상블.**
+  - 5장 노트: `notes/ch05.md` + `notes/extra/ch05-데이터-모양과-문법.md`, `ch05-트리-학습-원리.md`, `ch05-실습-실수-모음.md`, `ch05-검증과-그리드서치.md`.
+- 컨테이너 재현용 와인 데이터: `https://raw.githubusercontent.com/rickiepark/hg-mldl/master/wine.csv` (bit.ly는 403).
 - 이번 세션에 효과 있었던 방식: 단계별로 끊어 설명하고 사용자가 "다음"이라고 하면 넘어가기 +
   단계마다 matplotlib 이미지(행렬곱 색칠, 소프트맥스 막대, 오차 히트맵, 결정 경계 변화). 이미지는 `notes/extra/img/`에 보관.
 
 ## 사용자 폴더 구조
 
-- `ch01_my_first_ml/`, `ch02_handling_data/`, `ch03_recursion_model/`, `ch04_logistic_regression/` — 사용자가 직접 만든 실습 노트북
+- `ch01_my_first_ml/`, `ch02_handling_data/`, `ch03_recursion_model/`, `ch04_logistic_regression/`, `ch05_tree_algorithm/` — 사용자가 직접 만든 실습 노트북
 - `linear_regression.ipynb` — 사용자가 루트로 옮겨둔 3-2 노트북 (건드리지 않음)
 - `notes/chXX.md` + `notes/extra/` — Claude가 관리하는 원리 노트 (Obsidian vault)
 - `notes/tools/` — 책 내용이 아닌 도구 사용법 노트 (클라우드 환경, git 등)
